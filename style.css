@@ -15,6 +15,13 @@ body {
     background-attachment: fixed;
 }
 
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 20px; 
+}
 
 #game-board {
     display: grid;
@@ -54,23 +61,22 @@ body {
     background-repeat: no-repeat;
     background-position: center;
 }
+
 #status-message {
     margin-top: 25px;
-    padding: 15px 30px;
-    font-size: 2em;
+    padding: 10px 20px;
+    font-size: 1.5em;
     font-weight: bold;
     color: #ffffff;
-    background-color: #d7f8b5;
-    border-radius: 10px;
+    background-color: #88a46b;
+    border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
-    min-height: 2em;
+    min-height: 0;
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
-/* style.css */
 
-/* ... (eksisterende CSS for body, h1, #game-board, .cell, #status-message) ... */
-
+/* Stil for den originale "Spill igjen"-knappen */
 #restart-button {
     padding: 10px 20px;
     font-size: 1.2em;
@@ -81,10 +87,70 @@ body {
     cursor: pointer;
     margin-top: 20px;
     transition: background-color 0.3s ease;
-} /* <-- Den avsluttende parantesen til #restart-button */
-
+}
 
 #restart-button:hover {
     background-color: #4c5b3b;
 }
-/* <-- FJERN DENNE EKSTRA KRØLLPARANTESEN! */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #d7f8b5;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #88a46b;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#modal-message {
+    font-size: 2em; 
+    font-weight: bold;
+    color: #4c5b3b;
+    margin-bottom: 20px;
+}
+
+/* Stil for "OK"-knappen i modalen */
+#modal-ok-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #88a46b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+#modal-ok-button:hover {
+    background-color: #4c5b3b;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold; 
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black; 
+    text-decoration: none;
+}

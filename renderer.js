@@ -1,22 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('game-board');
+    const statusMessage = document.getElementById('status-message');
     const restartButton = document.getElementById('restart-button');
-    // Funksjon for å starte spillet på nytt
+    const modal = document.getElementById('game-over-modal');
+    const modalMessage = document.getElementById('modal-message');
+    const modalOkButton = document.getElementById('modal-ok-button');
+    const closeButton = document.querySelector('.close-button');
+
+    let board = ['', '', '', '', '', '', '', '', ''];
+    let currentPlayer = 'X';
+    let gameActive = true;
+
+    // Funksjon for å starte spillet på nytt. Denne funksjonen vil nå bli brukt av alle restart-knappene.
     function restartGame() {
         board = ['', '', '', '', '', '', '', '', ''];
         currentPlayer = 'X';
         gameActive = true;
+        // VIKTIG: Oppdaterer statusmeldingen til å vise hvem sin tur det er
+        statusMessage.textContent = 'Det er Klodrik sin tur';
+        // Tømmer modal-meldingen i tilfelle den er synlig
+        modalMessage.textContent = ''; 
         renderBoard();
     }
 
-    // Koble restart-knappen til funksjonen
-    if (restartButton) {
-        restartButton.addEventListener('click', restartGame);
+    // Denne funksjonen oppdaterer statusmeldingen når spillerturen byttes.
+    function updateStatusMessage() {
+        statusMessage.textContent = `Det er ${currentPlayer === 'X' ? 'Klodrik' : 'Suki'} sin tur`;
     }
-    
-    let board = ['', '', '', '', '', '', '', '', '']
-    let currentPlayer ='X';
-    let gameActive = true;
 
     function renderBoard() {
         gameBoard.innerHTML = '';
@@ -24,9 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const cellElement = document.createElement('div');
             cellElement.classList.add('cell');
             cellElement.dataset.index = index;
-            cellElement.addEventListener('click', handleCellClick);
+            
+            if (gameActive && cell === '') {
+                cellElement.addEventListener('click', handleCellClick);
+            }
+            
             if (cell !== '') {
-                cellElement.classList.add(cell.toLowerCase()); // x eller o
+                cellElement.classList.add(cell.toLowerCase());
             }
             gameBoard.appendChild(cellElement);
         });
@@ -41,30 +55,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         board[clickedCellIndex] = currentPlayer;
-        renderBoard(); // Oppdater hele brettet slik at riktig klasse og bilde vises
+        renderBoard(); 
 
         if (checkWin()) {
             gameActive = false;
-            setTimeout(() => {
-                if (currentPlayer === 'X') {
-                    alert('Klodrik har vunnet!');
-                } else {
-                    alert('Suki har vunnet!');
-                }
-            }, 0);
+            if (currentPlayer === 'X') {
+                modalMessage.textContent = 'Klodrik har vunnet!';
+            } else {
+                modalMessage.textContent = 'Suki har vunnet!';
+            }
+            modal.style.display = 'block';
+            // VIKTIG: Oppdaterer også den vanlige statusmeldingen ved seier
+            statusMessage.textContent = modalMessage.textContent; 
             return;
         }
 
         if (checkDraw()) {
             gameActive = false;
-            setTimeout(() => {
-                alert('Det ble uavgjort!');
-            }, 0);
+            modalMessage.textContent = 'Det ble uavgjort!';
+            modal.style.display = 'block';
+            // VIKTIG: Oppdaterer også den vanlige statusmeldingen ved uavgjort
+            statusMessage.textContent = modalMessage.textContent;
             return;
         }
-
+        
+        // Oppdaterer den nåværende spilleren
         currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-
+        // VIKTIG: Kaller funksjonen som oppdaterer statusmeldingen etter hver tur
+        updateStatusMessage();
     }
 
     function checkWin() {
@@ -87,5 +105,35 @@ document.addEventListener('DOMContentLoaded', () => {
         return !board.includes('');
     }
     
-    renderBoard(); 
+    // Koble den opprinnelige restart-knappen til funksjonen
+    if (restartButton) {
+        restartButton.addEventListener('click', () => {
+            modal.style.display = 'none'; // I tilfelle modalen er åpen
+            restartGame();
+        });
+    }
+
+    // Lukk modalen når brukeren klikker på kryss (close)
+    if (closeButton) {
+        closeButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+
+    // "Mjau"-knappen i modalen lukker bare modalen
+    if (modalOkButton) {
+        modalOkButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+
+    // Lukk modalen når brukeren klikker utenfor modal-innholdet
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Starter spillet når siden lastes for første gang
+    restartGame();
 });
